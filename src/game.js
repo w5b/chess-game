@@ -12,12 +12,12 @@ class Game {
     }
 
     setCanvasSize() {
-        const dpr = window.devicePixelRatio || 1;
-        this.canvas.width = window.innerWidth * dpr;
-        this.canvas.height = window.innerHeight * dpr;
+        const devicePixelRatio = window.devicePixelRatio || 1;
+        this.canvas.width = window.innerWidth * devicePixelRatio;
+        this.canvas.height = window.innerHeight * devicePixelRatio;
         this.canvas.style.width = `${window.innerWidth}px`;
         this.canvas.style.height = `${window.innerHeight}px`;
-        this.ctx.scale(dpr, dpr);
+        this.ctx.scale(devicePixelRatio, devicePixelRatio);
     }
 
     draw() {

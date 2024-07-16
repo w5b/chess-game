@@ -1,6 +1,5 @@
 import Game from "./game.js";
-
-const DEBUG_MODE = true;
+import gameSettings from "./gameSettings.js";
 
 function gameLoop(game) {
     game.draw();
@@ -9,7 +8,7 @@ function gameLoop(game) {
 
 function main() {
     let game;
-    DEBUG_MODE ? game = window.game = new Game() : game = new Game();
+    gameSettings.DEBUG_MODE ? game = window.game = new Game() : game = new Game();
     requestAnimationFrame(() => gameLoop(game));
 }
 

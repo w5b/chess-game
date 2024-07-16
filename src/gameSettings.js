@@ -1,5 +1,8 @@
 const gameSettings = {
-    tileSize: 50
+    DEBUG_MODE: true,
+    tileSize: 50,
+    darkTileColor: "#81935c",
+    lightTileColor: "#ecebd2"
 }
 
 gameSettings.boardSize = gameSettings.tileSize * 8;

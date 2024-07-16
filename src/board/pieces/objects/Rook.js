@@ -6,7 +6,6 @@ class Rook extends Piece {
     constructor(color, type) {
         super();
         this.color = color;
-        console.log(type);
         this.position = {
             x: type == 1 ? 1 : 8,
             y: this.color == "white" ? 8 : 1
