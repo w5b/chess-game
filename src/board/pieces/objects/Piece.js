@@ -6,12 +6,24 @@ class Piece {
       x: 0,
       y: 0,
     };
+
+    this.boardPosition = {
+      x: 0,
+      y: 0,
+    };
+
+    this.isDragged = false;
   }
 
   draw(ctx) {
     this.getCachedPieceImage(this.idString, this.color)
       .then((image) => {
-        const position = this.getTranslatedPosition();
+        const position = this.isDragged
+          ? {
+              x: this.position.x - gameSettings.tileSize / 2,
+              y: this.position.y - gameSettings.tileSize / 2,
+            }
+          : this.getTranslatedPosition();
         ctx.drawImage(
           image,
           position.x,
@@ -43,10 +55,13 @@ Piece.prototype.getTranslatedPosition = function () {
   };
 };
 
-Piece.prototype.translatePositionToChessPosition = function (position) {
+Piece.prototype.translatePositionToChessPosition = function (
+  position,
+  shouldFlip = true
+) {
   return {
     x: position.x,
-    y: 8 - position.y + 1,
+    y: shouldFlip ? 8 - position.y + 1 : position.y,
   };
 };
 
@@ -54,8 +69,11 @@ Piece.prototype.xPositionToLetter = function (xPosition) {
   return String.fromCharCode(xPosition + 96);
 };
 
-Piece.prototype.getTile = function (position) {
-  const chessPosition = this.translatePositionToChessPosition(position);
+Piece.prototype.getTile = function (position, shouldFlip = true) {
+  const chessPosition = this.translatePositionToChessPosition(
+    position,
+    shouldFlip
+  );
   return this.xPositionToLetter(chessPosition.x) + chessPosition.y.toString();
 };
 

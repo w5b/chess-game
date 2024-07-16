@@ -24,10 +24,12 @@ class Board {
     this.drawPieces(ctx);
   }
 
-  drawBoard(ctx) {
-    const startX = (window.innerWidth - gameSettings.boardSize) / 2;
-    const startY = (window.innerHeight - gameSettings.boardSize) / 2;
+  setDimensions() {
+    this.startX = (window.innerWidth - gameSettings.boardSize) / 2;
+    this.startY = (window.innerHeight - gameSettings.boardSize) / 2;
+  }
 
+  drawBoard(ctx) {
     for (let i = 1; i <= 8; i++) {
       for (let j = 1; j <= 8; j++) {
         if ((i + j) % 2 === 0) {
@@ -36,8 +38,8 @@ class Board {
           ctx.fillStyle = gameSettings.lightTileColor;
         }
         ctx.fillRect(
-          startX + (i - 1) * gameSettings.tileSize,
-          startY + (j - 1) * gameSettings.tileSize,
+          this.startX + (i - 1) * gameSettings.tileSize,
+          this.startY + (j - 1) * gameSettings.tileSize,
           gameSettings.tileSize,
           gameSettings.tileSize
         );
@@ -49,8 +51,8 @@ class Board {
             ctx.fillStyle === gameSettings.darkTileColor
               ? gameSettings.lightTileColor
               : gameSettings.darkTileColor;
-          let textX = startX + (i - 1) * gameSettings.tileSize;
-          let textY = startY + (j - 1) * gameSettings.tileSize + fontSize;
+          let textX = this.startX + (i - 1) * gameSettings.tileSize;
+          let textY = this.startY + (j - 1) * gameSettings.tileSize + fontSize;
           let text = j.toString();
           if (j === 8) {
             textX += gameSettings.tileSize / 2 + fontSize;

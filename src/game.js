@@ -1,4 +1,5 @@
 import Board from "./board/board.js";
+import gameSettings from "./gameSettings.js";
 
 class Game {
   constructor() {
@@ -9,6 +10,13 @@ class Game {
     this.setCanvasSize();
 
     window.onresize = this.onWindowResize.bind(this);
+    window.onmousemove = this.onMouseMove.bind(this);
+    window.onmousedown = this.onMouseDown.bind(this);
+    window.onmouseup = this.onMouseUp.bind(this);
+
+    this.currentTurn = Math.random() < 0.5 ? "white" : "black";
+    this.hoveredPiece = null;
+    this.draggingPiece = null;
   }
 
   setCanvasSize() {
@@ -18,15 +26,122 @@ class Game {
     this.canvas.style.width = `${window.innerWidth}px`;
     this.canvas.style.height = `${window.innerHeight}px`;
     this.ctx.scale(devicePixelRatio, devicePixelRatio);
+
+    this.board.setDimensions();
   }
 
   draw() {
+    this.ctx.clearRect(0, 0, canvas.width, canvas.height);
     this.board.draw(this.ctx);
   }
 
   onWindowResize() {
     this.setCanvasSize();
-    this.draw();
+  }
+
+  isMouseInBoardBounds(e) {
+    const boardDim = gameSettings.tileSize * 8;
+    return (
+      e.clientX > this.board.startX &&
+      e.clientX < this.board.startX + boardDim &&
+      e.clientY > this.board.startY &&
+      e.clientY < this.board.startY + boardDim
+    );
+  }
+
+  getCurrentPieceInTile(tileX, tileY) {
+    for (const color in this.board.pieces) {
+      for (const pieceName in this.board.pieces[color]) {
+        const pieceArray = this.board.pieces[color][pieceName];
+        for (const piece of pieceArray) {
+          if (piece.position.x == tileX && piece.position.y == tileY) {
+            return piece;
+          }
+        }
+      }
+    }
+    return null;
+  }
+
+  mouseToBoardPosition(mouseX, mouseY) {
+    const boundingClientRect = this.canvas.getBoundingClientRect();
+    const clientX = mouseX - boundingClientRect.left;
+    const clientY = mouseY - boundingClientRect.top;
+    const relativeX = clientX - this.board.startX;
+    const relativeY = clientY - this.board.startY;
+
+    const tileX = Math.floor(relativeX / gameSettings.tileSize) + 1;
+    const tileY = Math.floor(relativeY / gameSettings.tileSize) + 1;
+
+    return {
+      x: tileX,
+      y: tileY,
+    };
+  }
+
+  onMouseMove(e) {
+    if (this.isMouseInBoardBounds(e)) {
+      const mouseBoardPosition = this.mouseToBoardPosition(
+        e.clientX,
+        e.clientY
+      );
+      const currentPiece = this.getCurrentPieceInTile(
+        mouseBoardPosition.x,
+        mouseBoardPosition.y
+      );
+      if (currentPiece) {
+        if (currentPiece.color == this.currentTurn) {
+          this.hoveredPiece = currentPiece;
+        }
+      } else {
+        this.hoveredPiece = null;
+      }
+
+      if (this.draggingPiece) {
+        const boundingClientRect = this.canvas.getBoundingClientRect();
+        const clientX = e.clientX - boundingClientRect.left;
+        const clientY = e.clientY - boundingClientRect.top;
+        this.draggingPiece.position.x = clientX;
+        this.draggingPiece.position.y = clientY;
+      }
+    }
+  }
+
+  onMouseDown(e) {
+    if (this.hoveredPiece) {
+      this.draggingPiece = this.hoveredPiece;
+      this.draggingPiece.isDragged = true;
+      const mouseBoardPosition = this.mouseToBoardPosition(
+        e.clientX,
+        e.clientY
+      );
+      this.draggingPiece.boardPosition = this.draggingPiece.position;
+      const boundingClientRect = this.canvas.getBoundingClientRect();
+      const clientX = e.clientX - boundingClientRect.left;
+      const clientY = e.clientY - boundingClientRect.top;
+      this.draggingPiece.position = { x: clientX, y: clientY };
+    }
+  }
+
+  onMouseUp(e) {
+    if (this.draggingPiece) {
+      const mouseBoardPosition = this.mouseToBoardPosition(
+        e.clientX,
+        e.clientY
+      );
+      if (
+        mouseBoardPosition.x > 1 &&
+        mouseBoardPosition.x < 8 &&
+        mouseBoardPosition.y > 1 &&
+        mouseBoardPosition.y < 8
+      ) {
+        this.draggingPiece.position = mouseBoardPosition;
+      } else {
+        this.draggingPiece.position = this.draggingPiece.boardPosition;
+      }
+      this.draggingPiece.isDragged = false;
+      this.draggingPiece = null;
+    }
   }
 }
 
