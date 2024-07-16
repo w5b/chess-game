@@ -16,6 +16,8 @@ class Board {
       white: {},
     };
 
+    this.currentTurn = Math.random() < 0.5 ? "white" : "black";
+
     this.initializePieces();
   }
 
@@ -103,6 +105,11 @@ class Board {
 
     this.pieces[color][id] = [];
     this.pieces[color][id].push(object);
+  }
+
+  MovePiece(piece, position) {
+    piece.position = position;
+    this.currentTurn = this.currentTurn == "white" ? "black" : "white";
   }
 }
 

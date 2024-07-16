@@ -14,7 +14,6 @@ class Game {
     window.onmousedown = this.onMouseDown.bind(this);
     window.onmouseup = this.onMouseUp.bind(this);
 
-    this.currentTurn = Math.random() < 0.5 ? "white" : "black";
     this.hoveredPiece = null;
     this.draggingPiece = null;
   }
@@ -33,6 +32,9 @@ class Game {
   draw() {
     this.ctx.clearRect(0, 0, canvas.width, canvas.height);
     this.board.draw(this.ctx);
+
+    gameSettings.DEBUG_MODE &&
+      this.ctx.fillText(this.board.currentTurn, 50, 50);
   }
 
   onWindowResize() {
@@ -90,9 +92,7 @@ class Game {
         mouseBoardPosition.y
       );
       if (currentPiece) {
-        if (currentPiece.color == this.currentTurn) {
-          this.hoveredPiece = currentPiece;
-        }
+        this.hoveredPiece = currentPiece;
       } else {
         this.hoveredPiece = null;
       }
@@ -130,12 +130,13 @@ class Game {
         e.clientY
       );
       if (
-        mouseBoardPosition.x > 1 &&
-        mouseBoardPosition.x < 8 &&
-        mouseBoardPosition.y > 1 &&
-        mouseBoardPosition.y < 8
+        this.board.currentTurn == this.draggingPiece.color &&
+        mouseBoardPosition.x >= 1 &&
+        mouseBoardPosition.x <= 8 &&
+        mouseBoardPosition.y >= 1 &&
+        mouseBoardPosition.y <= 8
       ) {
-        this.draggingPiece.position = mouseBoardPosition;
+        this.board.MovePiece(this.draggingPiece, mouseBoardPosition);
       } else {
         this.draggingPiece.position = this.draggingPiece.boardPosition;
       }
