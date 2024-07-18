@@ -142,7 +142,8 @@ class Game {
           e.clientX,
           e.clientY
         );
-        this.board.movePiece(selectedPiece, mouseBoardPosition);
+        if (selectedPiece.canGoTo(mouseBoardPosition, this.board.chessBoard))
+          this.board.movePiece(selectedPiece, mouseBoardPosition);
       }
     }
   }
