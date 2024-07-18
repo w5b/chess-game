@@ -31,12 +31,11 @@ class Board {
   }
 
   drawBoard(ctx) {
-    const selectedPiece = this.selectedTile
-      ? this.chessBoard[this.selectedTile.x - 1][this.selectedTile.y - 1]
-      : null;
-    const selectedPieceWalkableTiles = selectedPiece
-      ? selectedPiece.getWalkableTiles(this.chessBoard)
-      : [];
+    const selectedPiece =
+      this.selectedTile &&
+      this.chessBoard[this.selectedTile.x - 1][this.selectedTile.y - 1];
+    const selectedPieceWalkableTiles =
+      selectedPiece && selectedPiece.getWalkableTiles(this.chessBoard);
 
     for (let i = 1; i <= 8; i++) {
       for (let j = 1; j <= 8; j++) {

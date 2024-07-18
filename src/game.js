@@ -131,6 +131,19 @@ class Game {
       }
       this.draggingPiece.isDragged = false;
       this.draggingPiece = null;
+    } else {
+      const selectedPiece =
+        this.board.selectedTile &&
+        this.board.chessBoard[this.board.selectedTile.x - 1][
+          this.board.selectedTile.y - 1
+        ];
+      if (selectedPiece && selectedPiece.color == this.board.currentTurn) {
+        const mouseBoardPosition = this.mouseToBoardPosition(
+          e.clientX,
+          e.clientY
+        );
+        this.board.movePiece(selectedPiece, mouseBoardPosition);
+      }
     }
   }
 }
