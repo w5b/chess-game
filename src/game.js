@@ -31,7 +31,7 @@ class Game {
 
   draw() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    this.board.draw(this.ctx);
+    this.board.drawAndUpdate(this.ctx);
 
     if (gameSettings.DEBUG_MODE) {
       this.ctx.fillText(this.board.currentTurn, 50, 50);
@@ -78,9 +78,11 @@ class Game {
   onMouseMove(e) {
     if (this.draggingPiece) {
       const boundingClientRect = this.canvas.getBoundingClientRect();
-      const clientX = e.clientX - boundingClientRect.left;
-      const clientY = e.clientY - boundingClientRect.top;
-      this.draggingPiece.tilePosition = { x: clientX, y: clientY };
+      const clientX =
+        e.clientX - boundingClientRect.left - gameSettings.tileSize / 2;
+      const clientY =
+        e.clientY - boundingClientRect.top - gameSettings.tileSize / 2;
+      this.draggingPiece.visualPosition = { x: clientX, y: clientY };
     }
   }
 
@@ -95,18 +97,26 @@ class Game {
         mouseBoardPosition.y
       );
       this.hoveredPiece = currentPiece;
-      if (this.hoveredPiece) {
-        this.draggingPiece = this.hoveredPiece;
-        this.draggingPiece.isDragged = true;
-        this.draggingPiece.previousPosition = this.draggingPiece.tilePosition;
-        const boundingClientRect = this.canvas.getBoundingClientRect();
-        const clientX = e.clientX - boundingClientRect.left;
-        const clientY = e.clientY - boundingClientRect.top;
-        this.draggingPiece.tilePosition = { x: clientX, y: clientY };
-        this.board.selectedTile = {
-          x: this.hoveredPiece.previousPosition.x,
-          y: this.hoveredPiece.previousPosition.y,
-        };
+      const selectedPiece =
+        this.board.selectedTile &&
+        this.board.chessBoard[this.board.selectedTile.x - 1][
+          this.board.selectedTile.y - 1
+        ];
+      if (
+        !selectedPiece ||
+        (currentPiece && currentPiece.equal(selectedPiece)) ||
+        (selectedPiece && selectedPiece.color != this.board.currentTurn) ||
+        (currentPiece && currentPiece.color == this.board.currentTurn)
+      ) {
+        if (this.hoveredPiece) {
+          this.draggingPiece = this.hoveredPiece;
+          this.draggingPiece.isDragged = true;
+          this.draggingPiece.previousPosition = this.draggingPiece.tilePosition;
+          this.board.selectedTile = {
+            x: this.hoveredPiece.tilePosition.x,
+            y: this.hoveredPiece.tilePosition.y,
+          };
+        }
       }
     }
   }
@@ -128,6 +138,8 @@ class Game {
         this.board.movePiece(this.draggingPiece, mouseBoardPosition);
       } else {
         this.draggingPiece.tilePosition = this.draggingPiece.previousPosition;
+        this.draggingPiece.visualPosition =
+          this.draggingPiece.getTranslatedPosition();
       }
       this.draggingPiece.isDragged = false;
       this.draggingPiece = null;

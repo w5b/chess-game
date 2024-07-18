@@ -23,16 +23,10 @@ class Piece {
   draw(ctx) {
     this.getCachedPieceImage(this.idString, this.color)
       .then((image) => {
-        const position = this.isDragged
-          ? {
-              x: this.tilePosition.x - gameSettings.tileSize / 2,
-              y: this.tilePosition.y - gameSettings.tileSize / 2,
-            }
-          : this.getTranslatedPosition();
         ctx.drawImage(
           image,
-          position.x,
-          position.y,
+          this.visualPosition.x,
+          this.visualPosition.y,
           gameSettings.tileSize,
           gameSettings.tileSize
         );
@@ -40,6 +34,16 @@ class Piece {
       .catch((error) => {});
   }
 
+  update() {
+    if (!this.isDragged) {
+      const translatedPosition = this.getTranslatedPosition();
+      const lerpFactor = 0.1;
+      this.visualPosition.x +=
+        (translatedPosition.x - this.visualPosition.x) * lerpFactor;
+      this.visualPosition.y +=
+        (translatedPosition.y - this.visualPosition.y) * lerpFactor;
+    }
+  }
   getWalkableTiles(board) {
     return [];
   }
@@ -163,6 +167,13 @@ Piece.prototype.getCachedPieceImage = async function (pieceName, pieceColor) {
 Piece.prototype.isPositionInBoardsBounds = function (position) {
   return (
     position.x >= 1 && position.x <= 8 && position.y >= 1 && position.y <= 8
+  );
+};
+
+Piece.prototype.equal = function (otherPiece) {
+  return (
+    this.tilePosition.x == otherPiece.tilePosition.x &&
+    this.tilePosition.y == otherPiece.tilePosition.y
   );
 };
 

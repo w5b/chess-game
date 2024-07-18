@@ -28,9 +28,10 @@ class Bishop extends Piece {
         const piece = board[tile.x - 1][tile.y - 1];
 
         if (piece) {
-          if (piece.color !== this.color && piece.id != pieceIds.King)
+          if (piece.color !== this.color && piece.id != pieceIds.King) {
             walkableTiles.push(tile);
-          else break;
+            break;
+          } else break;
         } else {
           walkableTiles.push(tile);
         }

@@ -20,9 +20,9 @@ class Board {
     this.initializePieces();
   }
 
-  draw(ctx) {
+  drawAndUpdate(ctx) {
     this.drawBoard(ctx);
-    this.drawPieces(ctx);
+    this.drawAndUpdatePieces(ctx);
   }
 
   setDimensions() {
@@ -70,7 +70,7 @@ class Board {
     ) {
       ctx.save();
       ctx.globalAlpha = 0.3;
-      ctx.fillStyle = "green";
+      ctx.fillStyle = "black";
       ctx.beginPath();
       ctx.arc(
         this.startX +
@@ -79,7 +79,7 @@ class Board {
         this.startY +
           (j - 1) * gameSettings.tileSize +
           gameSettings.tileSize / 2,
-        gameSettings.tileSize / 6,
+        gameSettings.tileSize / 8,
         0,
         2 * Math.PI
       );
@@ -108,10 +108,12 @@ class Board {
     }
   }
 
-  drawPieces(ctx) {
+  drawAndUpdatePieces(ctx) {
     for (const row of this.chessBoard) {
       for (const piece of row) {
-        piece?.draw(ctx);
+        if (!piece) continue;
+        piece.draw(ctx);
+        piece.update();
       }
     }
   }
@@ -151,6 +153,7 @@ class Board {
   }
 
   initializePiece(piece) {
+    piece.visualPosition = piece.getTranslatedPosition();
     this.chessBoard[piece.tilePosition.x - 1][piece.tilePosition.y - 1] = piece;
   }
 
@@ -160,8 +163,8 @@ class Board {
       y: position.y - 1,
     };
     if (
-      piece.previousPosition.x == position.x &&
-      piece.previousPosition.y == position.y
+      piece.tilePosition.x == position.x &&
+      piece.tilePosition.y == position.y
     ) {
       piece.tilePosition = piece.previousPosition;
       return;
