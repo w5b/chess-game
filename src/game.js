@@ -30,11 +30,12 @@ class Game {
   }
 
   draw() {
-    this.ctx.clearRect(0, 0, canvas.width, canvas.height);
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.board.draw(this.ctx);
 
-    gameSettings.DEBUG_MODE &&
+    if (gameSettings.DEBUG_MODE) {
       this.ctx.fillText(this.board.currentTurn, 50, 50);
+    }
   }
 
   onWindowResize() {
@@ -52,15 +53,8 @@ class Game {
   }
 
   getCurrentPieceInTile(tileX, tileY) {
-    for (const color in this.board.pieces) {
-      for (const pieceName in this.board.pieces[color]) {
-        const pieceArray = this.board.pieces[color][pieceName];
-        for (const piece of pieceArray) {
-          if (piece.position.x == tileX && piece.position.y == tileY) {
-            return piece;
-          }
-        }
-      }
+    if (tileX >= 1 && tileX <= 8 && tileY >= 1 && tileY <= 8) {
+      return this.board.chessBoard[tileX - 1][tileY - 1];
     }
     return null;
   }
@@ -91,18 +85,13 @@ class Game {
         mouseBoardPosition.x,
         mouseBoardPosition.y
       );
-      if (currentPiece) {
-        this.hoveredPiece = currentPiece;
-      } else {
-        this.hoveredPiece = null;
-      }
+      this.hoveredPiece = currentPiece;
 
       if (this.draggingPiece) {
         const boundingClientRect = this.canvas.getBoundingClientRect();
         const clientX = e.clientX - boundingClientRect.left;
         const clientY = e.clientY - boundingClientRect.top;
-        this.draggingPiece.position.x = clientX;
-        this.draggingPiece.position.y = clientY;
+        this.draggingPiece.position = { x: clientX, y: clientY };
       }
     }
   }
@@ -111,10 +100,6 @@ class Game {
     if (this.hoveredPiece) {
       this.draggingPiece = this.hoveredPiece;
       this.draggingPiece.isDragged = true;
-      const mouseBoardPosition = this.mouseToBoardPosition(
-        e.clientX,
-        e.clientY
-      );
       this.draggingPiece.boardPosition = this.draggingPiece.position;
       const boundingClientRect = this.canvas.getBoundingClientRect();
       const clientX = e.clientX - boundingClientRect.left;
@@ -130,13 +115,13 @@ class Game {
         e.clientY
       );
       if (
-        this.board.currentTurn == this.draggingPiece.color &&
+        this.board.currentTurn === this.draggingPiece.color &&
         mouseBoardPosition.x >= 1 &&
         mouseBoardPosition.x <= 8 &&
         mouseBoardPosition.y >= 1 &&
         mouseBoardPosition.y <= 8
       ) {
-        this.board.MovePiece(this.draggingPiece, mouseBoardPosition);
+        this.board.movePiece(this.draggingPiece, mouseBoardPosition);
       } else {
         this.draggingPiece.position = this.draggingPiece.boardPosition;
       }

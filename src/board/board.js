@@ -1,22 +1,19 @@
 import King from "./pieces/objects/King.js";
 import Queen from "./pieces/objects/Queen.js";
 import Rook from "./pieces/objects/Rook.js";
-
-import gameSettings from "../gameSettings.js";
-import pieceIds from "./pieces/pieceIds.js";
 import Bishop from "./pieces/objects/Bishop.js";
 import Knight from "./pieces/objects/Knight.js";
 import Pawn from "./pieces/objects/Pawn.js";
+
+import gameSettings from "../gameSettings.js";
+import pieceIds from "./pieces/pieceIds.js";
 import Piece from "./pieces/objects/Piece.js";
 
 class Board {
   constructor() {
-    this.pieces = {
-      black: {},
-      white: {},
-    };
-
     this.currentTurn = Math.random() < 0.5 ? "white" : "black";
+
+    this.chessBoard = Array.from({ length: 8 }, () => Array(8).fill(null));
 
     this.initializePieces();
   }
@@ -34,11 +31,10 @@ class Board {
   drawBoard(ctx) {
     for (let i = 1; i <= 8; i++) {
       for (let j = 1; j <= 8; j++) {
-        if ((i + j) % 2 === 0) {
-          ctx.fillStyle = gameSettings.darkTileColor;
-        } else {
-          ctx.fillStyle = gameSettings.lightTileColor;
-        }
+        ctx.fillStyle =
+          (i + j) % 2 === 0
+            ? gameSettings.darkTileColor
+            : gameSettings.lightTileColor;
         ctx.fillRect(
           this.startX + (i - 1) * gameSettings.tileSize,
           this.startY + (j - 1) * gameSettings.tileSize,
@@ -68,48 +64,49 @@ class Board {
   }
 
   drawPieces(ctx) {
-    for (const color in this.pieces) {
-      for (const pieces in this.pieces[color]) {
-        for (const piece of this.pieces[color][pieces]) {
-          piece.draw(ctx);
+    for (let i = 0; i < this.chessBoard.length; i++) {
+      for (let j = 0; j < this.chessBoard[i].length; j++) {
+        const currentTile = this.chessBoard[i][j];
+        if (currentTile != null) {
+          currentTile.draw(ctx);
         }
       }
     }
   }
 
   initializePieces() {
-    for (const color in this.pieces) {
-      this.initializePiece(color, pieceIds.Rook, new Rook(color, 1));
-      this.initializePiece(color, pieceIds.Rook, new Rook(color, 2));
+    const colors = ["white", "black"];
 
-      this.initializePiece(color, pieceIds.King, new King(color));
-      this.initializePiece(color, pieceIds.Queen, new Queen(color));
-
-      this.initializePiece(color, pieceIds.Bishop, new Bishop(color, 1));
-      this.initializePiece(color, pieceIds.Bishop, new Bishop(color, 2));
-
-      this.initializePiece(color, pieceIds.Knight, new Knight(color, 1));
-      this.initializePiece(color, pieceIds.Knight, new Knight(color, 2));
+    for (const color of colors) {
+      this.initializePiece(new Rook(color, 1));
+      this.initializePiece(new Rook(color, 2));
+      this.initializePiece(new King(color));
+      this.initializePiece(new Queen(color));
+      this.initializePiece(new Bishop(color, 1));
+      this.initializePiece(new Bishop(color, 2));
+      this.initializePiece(new Knight(color, 1));
+      this.initializePiece(new Knight(color, 2));
 
       for (let i = 1; i <= 8; i++) {
-        this.initializePiece(color, pieceIds.Pawn, new Pawn(color, i));
+        this.initializePiece(new Pawn(color, i));
       }
     }
   }
 
-  initializePiece(color, id, object) {
-    if (this.pieces[color][id]) {
-      this.pieces[color][id].push(object);
-      return;
-    }
-
-    this.pieces[color][id] = [];
-    this.pieces[color][id].push(object);
+  initializeBoard() {
+    this.chessBoard = Array.from({ length: 8 }, () => Array(8).fill(null));
   }
 
-  MovePiece(piece, position) {
+  initializePiece(piece) {
+    this.chessBoard[piece.position.x - 1][piece.position.y - 1] = piece;
+  }
+
+  movePiece(piece, position) {
     piece.position = position;
-    this.currentTurn = this.currentTurn == "white" ? "black" : "white";
+    this.chessBoard[position.x - 1][position.y - 1] = piece;
+    this.chessBoard[piece.boardPosition.x - 1][piece.boardPosition.y - 1] =
+      null;
+    this.currentTurn = this.currentTurn === "white" ? "black" : "white";
   }
 }
 
