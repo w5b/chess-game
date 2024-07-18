@@ -102,10 +102,22 @@ class Board {
   }
 
   movePiece(piece, position) {
+    const boardPosition = {
+      x: position.x - 1,
+      y: position.y - 1,
+    };
+    if (
+      piece.previousPosition.x == position.x &&
+      piece.previousPosition.y == position.y
+    ) {
+      piece.tilePosition = piece.previousPosition;
+      return;
+    }
     piece.tilePosition = position;
-    this.chessBoard[position.x - 1][position.y - 1] = piece;
-    this.chessBoard[piece.visualPosition.x - 1][piece.visualPosition.y - 1] =
-      null;
+    this.chessBoard[boardPosition.x][boardPosition.y] = piece;
+    this.chessBoard[piece.previousPosition.x - 1][
+      piece.previousPosition.y - 1
+    ] = null;
     this.currentTurn = this.currentTurn === "white" ? "black" : "white";
   }
 }

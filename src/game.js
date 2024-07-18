@@ -100,7 +100,7 @@ class Game {
     if (this.hoveredPiece) {
       this.draggingPiece = this.hoveredPiece;
       this.draggingPiece.isDragged = true;
-      this.draggingPiece.visualPosition = this.draggingPiece.tilePosition;
+      this.draggingPiece.previousPosition = this.draggingPiece.tilePosition;
       const boundingClientRect = this.canvas.getBoundingClientRect();
       const clientX = e.clientX - boundingClientRect.left;
       const clientY = e.clientY - boundingClientRect.top;
@@ -124,7 +124,7 @@ class Game {
       ) {
         this.board.movePiece(this.draggingPiece, mouseBoardPosition);
       } else {
-        this.draggingPiece.tilePosition = this.draggingPiece.visualPosition;
+        this.draggingPiece.tilePosition = this.draggingPiece.previousPosition;
       }
       this.draggingPiece.isDragged = false;
       this.draggingPiece = null;

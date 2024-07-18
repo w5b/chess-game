@@ -12,6 +12,11 @@ class Piece {
       y: 0,
     };
 
+    this.previousPosition = {
+      x: 0,
+      y: 0,
+    };
+
     this.isDragged = false;
   }
 
