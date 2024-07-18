@@ -11,7 +11,9 @@ class King extends Piece {
     };
   }
 
-  getWalkableTiles(board) {}
+  getWalkableTiles(board) {
+    return [];
+  }
 }
 
 King.prototype.id = pieceIds.King;

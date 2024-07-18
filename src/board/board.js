@@ -13,6 +13,8 @@ class Board {
   constructor() {
     this.currentTurn = Math.random() < 0.5 ? "white" : "black";
 
+    this.selectedTile = null;
+
     this.initializeBoard();
 
     this.initializePieces();
@@ -29,36 +31,88 @@ class Board {
   }
 
   drawBoard(ctx) {
+    const selectedPiece = this.selectedTile
+      ? this.chessBoard[this.selectedTile.x - 1][this.selectedTile.y - 1]
+      : null;
+    const selectedPieceWalkableTiles = selectedPiece
+      ? selectedPiece.getWalkableTiles(this.chessBoard)
+      : [];
+
     for (let i = 1; i <= 8; i++) {
       for (let j = 1; j <= 8; j++) {
-        ctx.fillStyle =
-          (i + j) % 2 === 0
-            ? gameSettings.darkTileColor
-            : gameSettings.lightTileColor;
-        ctx.fillRect(
-          this.startX + (i - 1) * gameSettings.tileSize,
-          this.startY + (j - 1) * gameSettings.tileSize,
-          gameSettings.tileSize,
-          gameSettings.tileSize
-        );
+        this.drawTile(ctx, i, j, selectedPiece, selectedPieceWalkableTiles);
+        this.drawCoordinates(ctx, i, j);
+      }
+    }
+  }
 
-        if (i === 1 || j === 8) {
-          const fontSize = 12;
-          ctx.font = `${fontSize}px Arial`;
-          ctx.fillStyle =
-            ctx.fillStyle === gameSettings.darkTileColor
-              ? gameSettings.lightTileColor
-              : gameSettings.darkTileColor;
-          let textX = this.startX + (i - 1) * gameSettings.tileSize;
-          let textY = this.startY + (j - 1) * gameSettings.tileSize + fontSize;
-          let text = j.toString();
-          if (j === 8) {
-            textX += gameSettings.tileSize / 2 + fontSize;
-            textY += gameSettings.tileSize - fontSize * 1.5;
-            text = Piece.prototype.xPositionToLetter(i);
-          }
-          ctx.fillText(text, textX, textY);
-        }
+  drawTile(ctx, i, j, selectedPiece, walkableTiles) {
+    const isDark = (i + j) % 2 === 0;
+    ctx.fillStyle = isDark
+      ? gameSettings.darkTileColor
+      : gameSettings.lightTileColor;
+
+    if (selectedPiece && this.selectedTile.x == i && this.selectedTile.y == j) {
+      ctx.fillStyle = isDark
+        ? gameSettings.darkTileSelectedColor
+        : gameSettings.lightTileSelectedColor;
+    }
+
+    ctx.fillRect(
+      this.startX + (i - 1) * gameSettings.tileSize,
+      this.startY + (j - 1) * gameSettings.tileSize,
+      gameSettings.tileSize,
+      gameSettings.tileSize
+    );
+
+    if (
+      walkableTiles &&
+      walkableTiles.some((tile) => tile.x === i && tile.y === j)
+    ) {
+      ctx.save();
+      ctx.globalAlpha = 0.3;
+      ctx.fillStyle = "green";
+      ctx.beginPath();
+      ctx.arc(
+        this.startX +
+          (i - 1) * gameSettings.tileSize +
+          gameSettings.tileSize / 2,
+        this.startY +
+          (j - 1) * gameSettings.tileSize +
+          gameSettings.tileSize / 2,
+        gameSettings.tileSize / 6,
+        0,
+        2 * Math.PI
+      );
+      ctx.fill();
+      ctx.restore();
+    }
+  }
+
+  drawCoordinates(ctx, i, j) {
+    if (i === 1 || j === 8) {
+      const fontSize = 12;
+      ctx.font = `${fontSize}px Arial`;
+      ctx.fillStyle =
+        ctx.fillStyle === gameSettings.darkTileColor
+          ? gameSettings.lightTileColor
+          : gameSettings.darkTileColor;
+      let textX = this.startX + (i - 1) * gameSettings.tileSize;
+      let textY = this.startY + (j - 1) * gameSettings.tileSize + fontSize;
+      let text = j.toString();
+      if (j === 8) {
+        textX += gameSettings.tileSize / 2 + fontSize;
+        textY += gameSettings.tileSize - fontSize * 1.5;
+        text = Piece.prototype.xPositionToLetter(i);
+      }
+      ctx.fillText(text, textX, textY);
+    }
+  }
+
+  drawPieces(ctx) {
+    for (const row of this.chessBoard) {
+      for (const piece of row) {
+        piece?.draw(ctx);
       }
     }
   }

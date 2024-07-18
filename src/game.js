@@ -76,6 +76,15 @@ class Game {
   }
 
   onMouseMove(e) {
+    if (this.draggingPiece) {
+      const boundingClientRect = this.canvas.getBoundingClientRect();
+      const clientX = e.clientX - boundingClientRect.left;
+      const clientY = e.clientY - boundingClientRect.top;
+      this.draggingPiece.tilePosition = { x: clientX, y: clientY };
+    }
+  }
+
+  onMouseDown(e) {
     if (this.isMouseInBoardBounds(e)) {
       const mouseBoardPosition = this.mouseToBoardPosition(
         e.clientX,
@@ -86,25 +95,19 @@ class Game {
         mouseBoardPosition.y
       );
       this.hoveredPiece = currentPiece;
-
-      if (this.draggingPiece) {
+      if (this.hoveredPiece) {
+        this.draggingPiece = this.hoveredPiece;
+        this.draggingPiece.isDragged = true;
+        this.draggingPiece.previousPosition = this.draggingPiece.tilePosition;
         const boundingClientRect = this.canvas.getBoundingClientRect();
         const clientX = e.clientX - boundingClientRect.left;
         const clientY = e.clientY - boundingClientRect.top;
         this.draggingPiece.tilePosition = { x: clientX, y: clientY };
+        this.board.selectedTile = {
+          x: this.hoveredPiece.previousPosition.x,
+          y: this.hoveredPiece.previousPosition.y,
+        };
       }
-    }
-  }
-
-  onMouseDown(e) {
-    if (this.hoveredPiece) {
-      this.draggingPiece = this.hoveredPiece;
-      this.draggingPiece.isDragged = true;
-      this.draggingPiece.previousPosition = this.draggingPiece.tilePosition;
-      const boundingClientRect = this.canvas.getBoundingClientRect();
-      const clientX = e.clientX - boundingClientRect.left;
-      const clientY = e.clientY - boundingClientRect.top;
-      this.draggingPiece.tilePosition = { x: clientX, y: clientY };
     }
   }
 
