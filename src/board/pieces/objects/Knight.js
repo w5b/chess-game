@@ -11,9 +11,7 @@ class Knight extends Piece {
     };
   }
 
-  canGoTo(position, board) {
-    return true;
-  }
+  getWalkableTiles(board) {}
 }
 
 Knight.prototype.id = pieceIds.Knight;

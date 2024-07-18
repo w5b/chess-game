@@ -11,9 +11,7 @@ class Rook extends Piece {
     };
   }
 
-  canGoTo(position, board) {
-    return true;
-  }
+  getWalkableTiles(board) {}
 }
 
 Rook.prototype.id = pieceIds.Rook;

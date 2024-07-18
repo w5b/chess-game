@@ -11,9 +11,7 @@ class Queen extends Piece {
     };
   }
 
-  canGoTo(position, board) {
-    return true;
-  }
+  getWalkableTiles(board) {}
 }
 
 Queen.prototype.id = pieceIds.Queen;

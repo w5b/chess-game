@@ -13,7 +13,7 @@ class Board {
   constructor() {
     this.currentTurn = Math.random() < 0.5 ? "white" : "black";
 
-    this.chessBoard = Array.from({ length: 8 }, () => Array(8).fill(null));
+    this.initializeBoard();
 
     this.initializePieces();
   }

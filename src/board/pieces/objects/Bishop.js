@@ -11,8 +11,32 @@ class Bishop extends Piece {
     };
   }
 
-  canGoTo(position, board) {
-    return true;
+  getWalkableTiles(board) {
+    const walkableTiles = [];
+    const directions = [
+      this.direction.leftBackWards,
+      this.direction.rightBackwards,
+      this.direction.leftForwards,
+      this.direction.rightForwards,
+    ];
+
+    for (let dir of directions) {
+      for (let i = 1; i <= 8; i++) {
+        const tile = this.diagonalTile(i, dir);
+        if (!tile) break;
+
+        const piece = board[tile.x - 1][tile.y - 1];
+
+        if (piece) {
+          if (piece.color !== this.color && piece.id != pieceIds.King)
+            walkableTiles.push(tile);
+          else break;
+        } else {
+          walkableTiles.push(tile);
+        }
+      }
+    }
+    return walkableTiles;
   }
 }
 

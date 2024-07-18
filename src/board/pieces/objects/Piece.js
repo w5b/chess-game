@@ -40,8 +40,56 @@ class Piece {
       .catch((error) => {});
   }
 
+  getWalkableTiles(board) {
+    return [];
+  }
+
+  forwardTile(amount, direction) {
+    const amountDirectionY =
+      direction == this.direction.backwards ? amount : -amount;
+
+    const newPosition = {
+      x: this.previousPosition.x,
+      y: this.previousPosition.y + amountDirectionY,
+    };
+
+    if (!this.isPositionInBoardsBounds(newPosition)) return null;
+
+    return newPosition;
+  }
+
+  diagonalTile(amount, direction) {
+    const amountDirectionX =
+      direction === this.direction.leftBackWards ||
+      direction === this.direction.leftForwards
+        ? -amount
+        : amount;
+    const amountDirectionY =
+      direction === this.direction.leftForwards ||
+      direction === this.direction.rightForwards
+        ? amount
+        : -amount;
+
+    const newPosition = {
+      x: this.previousPosition.x + amountDirectionX,
+      y: this.previousPosition.y + amountDirectionY,
+    };
+
+    if (!this.isPositionInBoardsBounds(newPosition)) return null;
+
+    return newPosition;
+  }
+
   canGoTo(position, board) {
-    return true;
+    for (const possiblePosition of this.getWalkableTiles(board)) {
+      if (
+        position.x == possiblePosition.x &&
+        position.y == possiblePosition.y
+      ) {
+        return true;
+      }
+    }
+    return false;
   }
 }
 
@@ -112,8 +160,24 @@ Piece.prototype.getCachedPieceImage = async function (pieceName, pieceColor) {
   });
 };
 
+Piece.prototype.isPositionInBoardsBounds = function (position) {
+  return (
+    position.x >= 1 && position.x <= 8 && position.y >= 1 && position.y <= 8
+  );
+};
+
 Piece.prototype.idString = "piece";
 Piece.prototype.id = 0;
 Piece.prototype.piecesCachedImageList = [];
+Piece.prototype.direction = {
+  backwards: 1,
+  forwards: 2,
+  left: 3,
+  right: 4,
+  rightBackwards: 5,
+  rightForwards: 6,
+  leftBackWards: 7,
+  leftForwards: 8,
+};
 
 export default Piece;
