@@ -23,18 +23,9 @@ class Bishop extends Piece {
     for (let dir of directions) {
       for (let i = 1; i <= 8; i++) {
         const tile = this.diagonalTile(i, dir);
-        if (!tile) break;
-
-        const piece = board[tile.x - 1][tile.y - 1];
-
-        if (piece) {
-          if (piece.color !== this.color && piece.id != pieceIds.King) {
-            walkableTiles.push(tile);
-            break;
-          } else break;
-        } else {
-          walkableTiles.push(tile);
-        }
+        const walkableTilesCheck = this.simpleWalkCheck(tile, board);
+        if (walkableTilesCheck.length == 0) break;
+        walkableTiles.push(...walkableTilesCheck);
       }
     }
     return walkableTiles;

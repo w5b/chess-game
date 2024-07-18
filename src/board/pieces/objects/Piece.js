@@ -1,4 +1,5 @@
 import gameSettings from "../../../gameSettings.js";
+import pieceIds from "../pieceIds.js";
 
 class Piece {
   constructor() {
@@ -62,6 +63,20 @@ class Piece {
     return newPosition;
   }
 
+  sideTile(amount, direction) {
+    const amountDirectionX =
+      direction === this.direction.left ? -amount : amount;
+
+    const newPosition = {
+      x: this.previousPosition.x + amountDirectionX,
+      y: this.previousPosition.y,
+    };
+
+    if (!this.isPositionInBoardsBounds(newPosition)) return null;
+
+    return newPosition;
+  }
+
   diagonalTile(amount, direction) {
     const amountDirectionX =
       direction === this.direction.leftBackWards ||
@@ -73,6 +88,37 @@ class Piece {
       direction === this.direction.rightForwards
         ? amount
         : -amount;
+
+    const newPosition = {
+      x: this.previousPosition.x + amountDirectionX,
+      y: this.previousPosition.y + amountDirectionY,
+    };
+
+    if (!this.isPositionInBoardsBounds(newPosition)) return null;
+
+    return newPosition;
+  }
+
+  knightTile(direction, type) {
+    const amountDirectionX =
+      direction === this.direction.rightBackwards ||
+      direction === this.direction.rightForwards
+        ? type === 1
+          ? 2
+          : 1
+        : type === 1
+        ? -2
+        : -1;
+
+    const amountDirectionY =
+      direction === this.direction.leftForwards ||
+      direction === this.direction.rightForwards
+        ? type === 1
+          ? 1
+          : 2
+        : type === 1
+        ? -1
+        : -2;
 
     const newPosition = {
       x: this.previousPosition.x + amountDirectionX,
@@ -175,6 +221,23 @@ Piece.prototype.equal = function (otherPiece) {
     this.tilePosition.x == otherPiece.tilePosition.x &&
     this.tilePosition.y == otherPiece.tilePosition.y
   );
+};
+
+Piece.prototype.simpleWalkCheck = function (tile, board) {
+  const walkableTiles = [];
+  if (!tile) return [];
+  const piece = board[tile.x - 1][tile.y - 1];
+
+  if (piece) {
+    if (piece.color != this.color) {
+      walkableTiles.push(tile);
+    } else {
+      return [];
+    }
+  } else {
+    walkableTiles.push(tile);
+  }
+  return walkableTiles;
 };
 
 Piece.prototype.idString = "piece";
