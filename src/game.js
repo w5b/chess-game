@@ -91,7 +91,7 @@ class Game {
         const boundingClientRect = this.canvas.getBoundingClientRect();
         const clientX = e.clientX - boundingClientRect.left;
         const clientY = e.clientY - boundingClientRect.top;
-        this.draggingPiece.position = { x: clientX, y: clientY };
+        this.draggingPiece.tilePosition = { x: clientX, y: clientY };
       }
     }
   }
@@ -100,11 +100,11 @@ class Game {
     if (this.hoveredPiece) {
       this.draggingPiece = this.hoveredPiece;
       this.draggingPiece.isDragged = true;
-      this.draggingPiece.boardPosition = this.draggingPiece.position;
+      this.draggingPiece.visualPosition = this.draggingPiece.tilePosition;
       const boundingClientRect = this.canvas.getBoundingClientRect();
       const clientX = e.clientX - boundingClientRect.left;
       const clientY = e.clientY - boundingClientRect.top;
-      this.draggingPiece.position = { x: clientX, y: clientY };
+      this.draggingPiece.tilePosition = { x: clientX, y: clientY };
     }
   }
 
@@ -119,11 +119,12 @@ class Game {
         mouseBoardPosition.x >= 1 &&
         mouseBoardPosition.x <= 8 &&
         mouseBoardPosition.y >= 1 &&
-        mouseBoardPosition.y <= 8
+        mouseBoardPosition.y <= 8 &&
+        this.draggingPiece.canGoTo(mouseBoardPosition, this.board.chessBoard)
       ) {
         this.board.movePiece(this.draggingPiece, mouseBoardPosition);
       } else {
-        this.draggingPiece.position = this.draggingPiece.boardPosition;
+        this.draggingPiece.tilePosition = this.draggingPiece.visualPosition;
       }
       this.draggingPiece.isDragged = false;
       this.draggingPiece = null;

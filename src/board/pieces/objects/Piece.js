@@ -2,12 +2,12 @@ import gameSettings from "../../../gameSettings.js";
 
 class Piece {
   constructor() {
-    this.position = {
+    this.tilePosition = {
       x: 0,
       y: 0,
     };
 
-    this.boardPosition = {
+    this.visualPosition = {
       x: 0,
       y: 0,
     };
@@ -20,8 +20,8 @@ class Piece {
       .then((image) => {
         const position = this.isDragged
           ? {
-              x: this.position.x - gameSettings.tileSize / 2,
-              y: this.position.y - gameSettings.tileSize / 2,
+              x: this.tilePosition.x - gameSettings.tileSize / 2,
+              y: this.tilePosition.y - gameSettings.tileSize / 2,
             }
           : this.getTranslatedPosition();
         ctx.drawImage(
@@ -34,6 +34,10 @@ class Piece {
       })
       .catch((error) => {});
   }
+
+  canGoTo(position, board) {
+    return true;
+  }
 }
 
 Piece.prototype.getTranslatedPosition = function () {
@@ -42,11 +46,11 @@ Piece.prototype.getTranslatedPosition = function () {
 
   const piecePositionX =
     boardStartX +
-    this.position.x * gameSettings.tileSize -
+    this.tilePosition.x * gameSettings.tileSize -
     gameSettings.tileSize;
   const piecePositionY =
     boardStartY +
-    this.position.y * gameSettings.tileSize -
+    this.tilePosition.y * gameSettings.tileSize -
     gameSettings.tileSize;
 
   return {

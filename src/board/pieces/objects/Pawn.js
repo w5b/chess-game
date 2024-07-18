@@ -5,10 +5,14 @@ class Pawn extends Piece {
   constructor(color, xPosition) {
     super();
     this.color = color;
-    this.position = {
+    this.tilePosition = {
       x: xPosition,
       y: this.color == "white" ? 7 : 2,
     };
+  }
+
+  canGoTo(position, board) {
+    return true;
   }
 }
 

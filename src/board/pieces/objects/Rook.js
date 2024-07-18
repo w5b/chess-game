@@ -5,10 +5,14 @@ class Rook extends Piece {
   constructor(color, type) {
     super();
     this.color = color;
-    this.position = {
+    this.tilePosition = {
       x: type == 1 ? 1 : 8,
       y: this.color == "white" ? 8 : 1,
     };
+  }
+
+  canGoTo(position, board) {
+    return true;
   }
 }
 

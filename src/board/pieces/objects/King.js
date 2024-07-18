@@ -5,10 +5,14 @@ class King extends Piece {
   constructor(color) {
     super();
     this.color = color;
-    this.position = {
+    this.tilePosition = {
       x: 5,
       y: this.color == "white" ? 8 : 1,
     };
+  }
+
+  canGoTo(position, board) {
+    return true;
   }
 }
 

@@ -98,13 +98,13 @@ class Board {
   }
 
   initializePiece(piece) {
-    this.chessBoard[piece.position.x - 1][piece.position.y - 1] = piece;
+    this.chessBoard[piece.tilePosition.x - 1][piece.tilePosition.y - 1] = piece;
   }
 
   movePiece(piece, position) {
-    piece.position = position;
+    piece.tilePosition = position;
     this.chessBoard[position.x - 1][position.y - 1] = piece;
-    this.chessBoard[piece.boardPosition.x - 1][piece.boardPosition.y - 1] =
+    this.chessBoard[piece.visualPosition.x - 1][piece.visualPosition.y - 1] =
       null;
     this.currentTurn = this.currentTurn === "white" ? "black" : "white";
   }
