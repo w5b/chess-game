@@ -16,8 +16,6 @@ class Board {
     this.selectedTile = null;
 
     this.initializeBoard();
-
-    this.initializePieces();
   }
 
   drawAndUpdate(ctx) {
@@ -28,6 +26,11 @@ class Board {
   setDimensions() {
     this.startX = (window.innerWidth - gameSettings.boardSize) / 2;
     this.startY = (window.innerHeight - gameSettings.boardSize) / 2;
+  }
+
+  playSound(sound) {
+    sound.currentTime = 0;
+    sound.play();
   }
 
   drawBoard(ctx) {
@@ -150,6 +153,7 @@ class Board {
 
   initializeBoard() {
     this.chessBoard = Array.from({ length: 8 }, () => Array(8).fill(null));
+    this.initializePieces();
   }
 
   initializePiece(piece) {
@@ -175,6 +179,7 @@ class Board {
       piece.previousPosition.y - 1
     ] = null;
     this.currentTurn = this.currentTurn === "white" ? "black" : "white";
+    this.playSound(gameSettings.moveSound);
   }
 }
 

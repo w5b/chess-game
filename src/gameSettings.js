@@ -5,6 +5,8 @@ const gameSettings = {
   darkTileSelectedColor: "#bfc658",
   lightTileColor: "#ecebd2",
   lightTileSelectedColor: "#f6f295",
+
+  moveSound: new Audio("../assets/move-self.mp3"),
 };
 
 gameSettings.boardSize = gameSettings.tileSize * 8;

@@ -38,13 +38,16 @@ class Piece {
   update() {
     if (!this.isDragged) {
       const translatedPosition = this.getTranslatedPosition();
+      const distanceX = translatedPosition.x - this.visualPosition.x;
+      const distanceY = translatedPosition.y - this.visualPosition.y;
       const lerpFactor = 0.1;
-      this.visualPosition.x +=
-        (translatedPosition.x - this.visualPosition.x) * lerpFactor;
-      this.visualPosition.y +=
-        (translatedPosition.y - this.visualPosition.y) * lerpFactor;
+      const speed = 1 - Math.exp(-lerpFactor);
+
+      this.visualPosition.x += distanceX * speed;
+      this.visualPosition.y += distanceY * speed;
     }
   }
+
   getWalkableTiles(board) {
     return [];
   }
