@@ -9,6 +9,8 @@ class King extends Piece {
       x: 5,
       y: this.color == "white" ? 8 : 1,
     };
+
+    this.isChecked = false;
   }
 
   getWalkableTiles(board) {
@@ -43,6 +45,10 @@ class King extends Piece {
       walkableTiles.push(...walkableTilesCheck);
     }
     return walkableTiles;
+  }
+
+  setIsChecked(isChecked) {
+    this.isChecked = isChecked;
   }
 }
 

@@ -230,6 +230,7 @@ Piece.prototype.simpleWalkCheck = function (tile, board) {
 
   if (piece) {
     if (piece.color != this.color) {
+      if (piece.id == pieceIds.King) piece.setIsChecked(true);
       walkableTiles.push(tile);
     } else {
       return [];
