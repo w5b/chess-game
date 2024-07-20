@@ -19,16 +19,17 @@ class Pawn extends Piece {
     const forwardTile2 = this.forwardTile(2, isWhite ? forwards : backwards);
     const startRow = isWhite ? 7 : 2;
 
-    if (!forwardTile1 || !forwardTile2) return walkableTiles;
-
-    if (!board[forwardTile1.x - 1][forwardTile1.y - 1]) {
-      if (
-        this.previousPosition.y === startRow &&
-        !board[forwardTile2.x - 1][forwardTile2.y - 1]
-      ) {
-        walkableTiles.push(forwardTile1, forwardTile2);
-      } else {
-        walkableTiles.push(forwardTile1);
+    if (forwardTile1) {
+      if (!board[forwardTile1.x - 1][forwardTile1.y - 1]) {
+        if (
+          this.previousPosition.y === startRow &&
+          forwardTile2 &&
+          !board[forwardTile2.x - 1][forwardTile2.y - 1]
+        ) {
+          walkableTiles.push(forwardTile1, forwardTile2);
+        } else {
+          walkableTiles.push(forwardTile1);
+        }
       }
     }
 

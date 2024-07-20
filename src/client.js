@@ -10,11 +10,11 @@ function createResetBoardButton() {
   const button = document.createElement("button");
   button.innerText = "Reset Board";
   button.onclick = function () {
-    console.log("hi");
     window.game && window.game.board.initializeBoard();
   };
   button.style.position = "absolute";
   button.style.zIndex = 999;
+  button.style.userSelect = "none";
   document.body.insertBefore(button, document.body.firstChild);
 }
 

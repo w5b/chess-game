@@ -114,18 +114,21 @@ class Board {
     if (i === 1 || j === 8) {
       const fontSize = 12;
       ctx.font = `${fontSize}px Arial`;
-      ctx.fillStyle =
-        ctx.fillStyle === gameSettings.darkTileColor
-          ? gameSettings.lightTileColor
-          : gameSettings.darkTileColor;
+      const isDarkTile = (i + j) % 2 === 0;
+      ctx.fillStyle = isDarkTile
+        ? gameSettings.lightTileColor
+        : gameSettings.darkTileColor;
+
       let textX = this.startX + (i - 1) * gameSettings.tileSize;
       let textY = this.startY + (j - 1) * gameSettings.tileSize + fontSize;
       let text = j.toString();
+
       if (j === 8) {
         textX += gameSettings.tileSize / 2 + fontSize;
         textY += gameSettings.tileSize - fontSize * 1.5;
         text = Piece.prototype.xPositionToLetter(i);
       }
+
       ctx.fillText(text, textX, textY);
     }
   }

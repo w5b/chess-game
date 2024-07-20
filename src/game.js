@@ -118,10 +118,17 @@ class Game {
           this.draggingPiece = this.hoveredPiece;
           this.draggingPiece.isDragged = true;
           this.draggingPiece.previousPosition = this.draggingPiece.tilePosition;
-          this.board.selectedTile = {
-            x: this.hoveredPiece.tilePosition.x,
-            y: this.hoveredPiece.tilePosition.y,
-          };
+          if (
+            this.board.selectedTile &&
+            this.board.selectedTile.x == this.hoveredPiece.tilePosition.x &&
+            this.board.selectedTile.y == this.hoveredPiece.tilePosition.y
+          ) {
+            this.board.selectedTile = null;
+          } else
+            this.board.selectedTile = {
+              x: this.hoveredPiece.tilePosition.x,
+              y: this.hoveredPiece.tilePosition.y,
+            };
           this.dragPiece(e);
         }
       }
