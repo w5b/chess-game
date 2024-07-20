@@ -10,7 +10,7 @@ class King extends Piece {
       y: this.color == "white" ? 8 : 1,
     };
 
-    this.isChecked = false;
+    this.setIsChecked(false);
   }
 
   getWalkableTiles(board) {

@@ -31,6 +31,32 @@ class Pawn extends Piece {
         walkableTiles.push(forwardTile1);
       }
     }
+
+    const diagonalTileLeft = this.diagonalTile(
+      1,
+      isWhite ? this.direction.leftForwards : this.direction.leftBackWards
+    );
+    const diagonalTileRight = this.diagonalTile(
+      1,
+      isWhite ? this.direction.rightForwards : this.direction.rightBackwards
+    );
+
+    if (diagonalTileLeft) {
+      const pieceDiagonalLeft =
+        board[diagonalTileLeft.x - 1][diagonalTileLeft.y - 1];
+      if (pieceDiagonalLeft) {
+        walkableTiles.push(diagonalTileLeft);
+      }
+    }
+    if (diagonalTileRight) {
+      const pieceDiagonalRight =
+        board[diagonalTileRight.x - 1][diagonalTileRight.y - 1];
+
+      if (pieceDiagonalRight) {
+        walkableTiles.push(diagonalTileRight);
+      }
+    }
+
     return walkableTiles;
   }
 }

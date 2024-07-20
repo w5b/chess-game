@@ -84,13 +84,13 @@ class Piece {
     const amountDirectionX =
       direction === this.direction.leftBackWards ||
       direction === this.direction.leftForwards
-        ? -amount
-        : amount;
+        ? amount
+        : -amount;
     const amountDirectionY =
       direction === this.direction.leftForwards ||
       direction === this.direction.rightForwards
-        ? amount
-        : -amount;
+        ? -amount
+        : amount;
 
     const newPosition = {
       x: this.previousPosition.x + amountDirectionX,

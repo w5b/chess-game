@@ -1,5 +1,5 @@
 import Board from "./board/board.js";
-import gameSettings from "./gameSettings.js";
+import gameSettings, { calculateTileSize } from "./gameSettings.js";
 
 class Game {
   constructor() {
@@ -39,6 +39,8 @@ class Game {
   }
 
   onWindowResize() {
+    gameSettings.tileSize = calculateTileSize();
+    gameSettings.boardSize = gameSettings.tileSize * 8;
     this.setCanvasSize();
   }
 
@@ -75,7 +77,7 @@ class Game {
     };
   }
 
-  onMouseMove(e) {
+  dragPiece(e) {
     if (this.draggingPiece) {
       const boundingClientRect = this.canvas.getBoundingClientRect();
       const clientX =
@@ -84,6 +86,10 @@ class Game {
         e.clientY - boundingClientRect.top - gameSettings.tileSize / 2;
       this.draggingPiece.visualPosition = { x: clientX, y: clientY };
     }
+  }
+
+  onMouseMove(e) {
+    this.dragPiece(e);
   }
 
   onMouseDown(e) {
@@ -116,6 +122,7 @@ class Game {
             x: this.hoveredPiece.tilePosition.x,
             y: this.hoveredPiece.tilePosition.y,
           };
+          this.dragPiece(e);
         }
       }
     }

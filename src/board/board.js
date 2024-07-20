@@ -15,6 +15,11 @@ class Board {
 
     this.selectedTile = null;
 
+    this.kings = {
+      black: null,
+      white: null,
+    };
+
     this.initializeBoard();
   }
 
@@ -49,15 +54,28 @@ class Board {
   }
 
   drawTile(ctx, i, j, selectedPiece, walkableTiles) {
+    const currentPiece = this.chessBoard[i - 1][j - 1];
     const isDark = (i + j) % 2 === 0;
-    ctx.fillStyle = isDark
-      ? gameSettings.darkTileColor
-      : gameSettings.lightTileColor;
 
-    if (selectedPiece && this.selectedTile.x == i && this.selectedTile.y == j) {
+    ctx.save();
+    if (
+      currentPiece &&
+      currentPiece.id == pieceIds.King &&
+      currentPiece.isChecked
+    ) {
+      ctx.fillStyle = gameSettings.kingCheckedColor;
+    } else if (
+      selectedPiece &&
+      this.selectedTile.x == i &&
+      this.selectedTile.y == j
+    ) {
       ctx.fillStyle = isDark
         ? gameSettings.darkTileSelectedColor
         : gameSettings.lightTileSelectedColor;
+    } else {
+      ctx.fillStyle = isDark
+        ? gameSettings.darkTileColor
+        : gameSettings.lightTileColor;
     }
 
     ctx.fillRect(
@@ -66,6 +84,7 @@ class Board {
       gameSettings.tileSize,
       gameSettings.tileSize
     );
+    ctx.restore();
 
     if (
       walkableTiles &&
@@ -136,9 +155,13 @@ class Board {
     const colors = ["white", "black"];
 
     for (const color of colors) {
+      const king = new King(color);
+      this.kings[color] = king;
+      this.initializePiece(king);
+
       this.initializePiece(new Rook(color, 1));
       this.initializePiece(new Rook(color, 2));
-      this.initializePiece(new King(color));
+
       this.initializePiece(new Queen(color));
       this.initializePiece(new Bishop(color, 1));
       this.initializePiece(new Bishop(color, 2));
