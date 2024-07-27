@@ -11,7 +11,7 @@ import Piece from "./pieces/objects/Piece.js";
 
 class Board {
   constructor() {
-    this.currentTurn = Math.random() < 0.5 ? "white" : "black";
+    this.currentTurn = "white";
 
     this.selectedTile = null;
 
